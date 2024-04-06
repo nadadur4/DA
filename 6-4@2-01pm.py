@@ -1,66 +1,61 @@
-class Graph:
+class Connect:
     def __init__(self):
-        self.graph = {}
+        self.users = {}
 
-    def add_vertex(self, vertex):
-        if vertex not in self.graph:
-            self.graph[vertex] = []
+    def add_user(self, user):
+        if user not in self.users:
+            self.users[user] = []
 
-    def add_edge(self, vertex1, vertex2):
-        if vertex1 in self.graph and vertex2 in self.graph:
-            self.graph[vertex1].append(vertex2)
-            self.graph[vertex2].append(vertex1)
+    def add_friend(self, user1, user2):
+        if user1 in self.users and user2 in self.users:
+            self.users[user1].append(user2)
+            self.users[user2].append(user1)
 
-    def delete_vertex(self, vertex):
-        """
-        Delete a vertex from the graph.
+    def delete_user(self, user):
+        if user in self.users:
+            del self.users[user]
+            for friends in self.users.values():
+                if user in friends:
+                    friends.remove(user)
 
-        :param vertex: The vertex to be deleted
-        """
-        if vertex in self.graph:
-            del self.graph[vertex]
-            for adjacent_vertices in self.graph.values():
-                if vertex in adjacent_vertices:
-                    adjacent_vertices.remove(vertex)
+    def remove_friend(self, user1, user2):
+        if user1 in self.users and user2 in self.users:
+            if user2 in self.users[user1]:
+                self.users[user1].remove(user2)
+            if user1 in self.users[user2]:
+                self.users[user2].remove(user1)
 
-    def remove_edge(self, vertex1, vertex2):
-        """
-        Remove an edge between two vertices.
+    def display_network(self):
+        for user in self.users:
+            print(user, "->", ', '.join(self.users[user]))
 
-        :param vertex1: The first vertex of the edge
-        :param vertex2: The second vertex of the edge
-        """
-        if vertex1 in self.graph and vertex2 in self.graph:
-            if vertex2 in self.graph[vertex1]:
-                self.graph[vertex1].remove(vertex2)
-            if vertex1 in self.graph[vertex2]:
-                self.graph[vertex2].remove(vertex1)
+    def show_friends(self, user):
+        if user in self.users:
+            print("Friends of", user, ":", ', '.join(self.users[user]))
 
-    def display_graph(self):
-        for vertex in self.graph:
-            print(vertex, "->", ', '.join(self.graph[vertex]))
-
-    def show_friends(self, vertex):
-        """
-        Show the friends (adjacent nodes) of a vertex.
-
-        :param vertex: The vertex whose friends you want to show
-        """
-        if vertex in self.graph:
-            print("Friends of", vertex, ":", ', '.join(self.graph[vertex]))
+    def mutual_friends(self, user):
+        if user in self.users:
+            mutuals = []
+            for friend in self.users[user]:
+                for friend_of_friend in self.users[friend]:
+                    if friend_of_friend not in self.users[user] and friend_of_friend != user:
+                        mutuals.append(friend_of_friend)
+            print("Mutual friends of", user, ":", ', '.join(set(mutuals)))
 
 
 # Example usage
-g = Graph()
-g.add_vertex("A")
-g.add_vertex("B")
-g.add_vertex("C")
-g.add_edge("A", "B")
-g.add_edge("B", "C")
-g.add_edge("A", "C")
-g.display_graph()
-g.show_friends("A")
-g.remove_edge("A", "B")
-g.display_graph()
-g.delete_vertex("C")
-g.display_graph()
+c = Connect()
+c.add_user("Alice")
+c.add_user("Bob")
+c.add_user("Charlie")
+c.add_user("David")
+c.add_friend("Alice", "Bob")
+c.add_friend("Bob", "Charlie")
+c.add_friend("Charlie", "David")
+c.display_network()
+c.show_friends("Alice")
+c.mutual_friends("Alice")
+c.remove_friend("Alice", "Bob")
+c.display_network()
+c.delete_user("Charlie")
+c.display_network()
