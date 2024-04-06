@@ -17,7 +17,7 @@ class Graph:
         Add a new edge between two vertices.
 
         :param vertex1: The first vertex of the edge
-        :param vertex2: The second vertex of the edge
+        :param vertejfgnskjgksfjghx2: The second vertex of the edge
         """
         if vertex1 in self.graph and vertex2 in self.graph:
             self.graph[vertex1].append(vertex2)
